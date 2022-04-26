@@ -1,0 +1,69 @@
+
+
+.table-container  {
+    //border: 1px solid black;
+    width: 95%;
+
+    .table-header {
+        width: 100%;
+        // background-color: dodgerblue;
+
+        .table-header-title {
+            margin-bottom: 1rem;
+
+
+            span {
+                font-weight: 700;
+                margin-left: 1rem;
+            }
+        }
+    }
+
+}
+
+
+td {
+    .icon{
+        margin-right: 1rem;
+        color: rgb(75, 73, 73);
+
+        &.icon-info{
+            color: rgb(57, 134, 57)
+        }
+    }
+}
+
+thead {
+    border-bottom: 1px solid rgb(203, 203, 203);
+    margin-bottom: 3rem !important;
+    
+    tr {
+
+    }
+    
+    th{
+        font-weight: 400 !important;
+
+    }
+}
+
+tbody {
+
+    tr{
+        border-radius: 1rem;
+        overflow: hidden;
+        
+        td {
+            color:rgb(75, 73, 73);
+        }
+        &:hover {
+            background-color: rgb(227, 227, 227);
+            cursor: pointer;
+            transition: color .3s ease-in-out;
+            td {
+                color: black;
+
+            }
+        }
+    }
+}

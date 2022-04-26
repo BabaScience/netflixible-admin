@@ -1,0 +1,69 @@
+
+
+.ajout-client {
+
+    .icon{
+        margin-right: .5rem;
+    }
+}
+
+.table-header-options {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+
+    .filter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        span {
+            margin-right: 0.4rem;
+        }
+
+    }
+}
+
+.pas-de-client {
+    width: 100%;
+    height: 100px;
+    // background-color: red;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgb(33, 33, 33);
+
+    .icon {
+        font-size: 25px;
+        margin-bottom: .5rem;
+        
+    }
+}
+
+
+.icon-active {
+    color: green;
+}
+
+.to-orange {
+    color: orange;
+
+    &:hover{
+        color: orange;
+    }
+}
+
+.to-red {
+    color: red;
+    
+    
+    &:hover{
+        color: red;
+    }
+}
+
+.to-danger {
+    color: red;
+    font-weight: 500
+}

@@ -1,0 +1,50 @@
+
+
+
+.view-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(228, 225, 225);
+}
+
+.data-container-connexion {
+    background-color: white;
+    width: 380px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center ;
+    border-radius: 1px
+}
+
+.data-entry, .data-entry-row {
+    margin-top: 1rem;
+    // background-color: red;
+    width: 80%;
+}
+
+.data-entry-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.submit-button {
+    width: 80%;
+    display: flex;
+    justify-content: center;    
+    margin-top: 1rem;
+}
+
+.error-message{
+    margin-top: 1rem;
+    color: red;
+    display: none;
+
+    &.show {
+        display: block;
+    }
+}
