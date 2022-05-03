@@ -27,6 +27,8 @@ const exampleAccounts = [
 function Index() {
   const [accounts, setAccounts] = useState(null)
 
+  const ApiUrl = "" // 'http://localhost:5000'
+
   useEffect(() => {
     console.log('restarted')
     fetchAccountsFromDB()
@@ -35,7 +37,7 @@ function Index() {
   }, [])
 
   async function fetchAccountsFromDB(){
-    await axios.get('/accounts')
+    await axios.get(`${ApiUrl}/accounts`)
               .then(fetchedAccounts => {
                 console.log(fetchedAccounts?.data)
                 setAccounts(fetchedAccounts?.data)

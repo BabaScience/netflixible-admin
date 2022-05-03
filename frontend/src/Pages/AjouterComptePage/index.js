@@ -22,6 +22,8 @@ function Index() {
     const [successMessage, setSuccessMessage] = useState('Hello Human')
     const [successTitle, setSuccessTitle] = useState('Félicitation')
 
+    const ApiUrl = "" // 'http://localhost:5000'
+
     async function handleAddNetflixAccount(e){
         e.preventDefault()
         // console.log("Nom Complet: ", netflixEmail.current)
@@ -39,7 +41,7 @@ function Index() {
             }
             profilesList.push(profileObj)
         }
-        await axios.post('/accounts/add', {
+        await axios.post(`${ApiUrl}/accounts/add`, {
             email: netflixEmail.current,
             password: netflixPassword.current,
             customers: [],
@@ -98,7 +100,7 @@ function Index() {
 
 
     function GeneratePassword(documentId){
-        axios.get('/generator/password')
+        axios.get(`${ApiUrl}/generator/password`)
             .then(result => {
                 if(result.data.error){
                     console.log(result.data.error.message)
@@ -112,7 +114,7 @@ function Index() {
     }
 
     function GenerateCode(documentId, index){
-        axios.get('/generator/code')
+        axios.get(`${ApiUrl}/generator/code`)
             .then(result => {
                 if(result.data.error){
                     console.log("Error")

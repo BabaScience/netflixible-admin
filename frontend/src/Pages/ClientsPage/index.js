@@ -36,10 +36,9 @@ const exampleClients = [
     {id: 11, nomComplet: "Modou Diop", telephone: 775248574, compteNetflix: "wowtvsenegal@gmail.com"},
 ]
 
-const exampleComptes = [
-    {id: 0, email: 'replaysenegal@gmail.com'},
-    {id: 1, email: 'wowtvsenegal@gmail.com'},
-    {id: 2, email: 'babascience@gmail.com'},
+const filters = [
+    {id: 0, by: 'active'},
+    {id: 1, by: 'non active'},
 ]
 
 
@@ -52,18 +51,20 @@ function Index() {
     const [pagination, setPagination] = useState({current: 1, pages: [1]})
     const [comptes, setComptes] = useState(null)
 
+    const ApiUrl =  "" // 'http://localhost:5000'
+
     useEffect(() => {
         console.log("Page Loaded!")
         fetchAccountsFromDB()
         fetchClientsFromDB()
         handlePagination()
-
+        
 
 
     }, [])
 
     async function fetchAccountsFromDB(){
-        await axios.get('/accounts')
+        await axios.get(`${ApiUrl}/account`)
                   .then(fetchedAccounts => {
                     setComptes(fetchedAccounts?.data)
                   })
@@ -71,7 +72,7 @@ function Index() {
     }
     
     async function fetchClientsFromDB(){
-      await axios.get('/customers')
+      await axios.get(`${ApiUrl}/customers`)
                 .then(fetchedCustomers => {
                     console.log(fetchedCustomers?.data)
                     setClients(fetchedCustomers?.data)
@@ -81,22 +82,46 @@ function Index() {
                 .catch(err => console.log(err))
     }
 
-    function handleFilterbyEmail(email) {
+    async function fetchActiveClientsFromDB(){
+        await axios.get(`${ApiUrl}/customers`)
+                  .then(fetchedCustomers => {
+                      console.log(fetchedCustomers?.data.filter(customer => customer?.active) )
+                      setClients(fetchedCustomers?.data.filter(customer => customer?.active) )
+                      setFilteredClients(fetchedCustomers?.data.filter(customer => customer?.active) )
+                      setDisplayedClients(fetchedCustomers?.data.filter(customer => customer?.active) )
+                  })
+                  .catch(err => console.log(err))
+      }
+
+      async function fetchNonActiveClientsFromDB(){
+        await axios.get(`${ApiUrl}/customers`)
+                  .then(fetchedCustomers => {
+                      console.log(fetchedCustomers?.data.filter(customer => !customer?.active) )
+                      setClients(fetchedCustomers?.data.filter(customer => !customer?.active))
+                      setFilteredClients(fetchedCustomers?.data.filter(customer => !customer?.active))
+                      setDisplayedClients(fetchedCustomers?.data.filter(customer => !customer?.active))
+                  })
+                  .catch(err => console.log(err))
+      }
+
+    function handleFilterby(attr) {
         /*
             This function does
             - filters the list of clients and updates filteredClients object 
             - calls handlePagination
         */
         
-        if(email != 'tout'){
-            var filtered_clients = clients.filter(({compteNetflix}) => compteNetflix === email)
-            setFilteredClients(filtered_clients)
+        if(attr === 'active'){
+            fetchActiveClientsFromDB()
         }
-        else {
-            setFilteredClients(clients)
+        if(attr === 'non active'){
+            fetchNonActiveClientsFromDB()
+        }
+        else if (attr === "tout"){
+            fetchClientsFromDB()
         }
         handlePagination()
-        setFilterByEmail(email)
+        setFilterByEmail(attr)
     }
 
     function handlePagination(to=1){
@@ -122,6 +147,7 @@ function Index() {
             let from_client = (to - 1) * 10
             let to_client = to * 10
             setDisplayedClients(filteredClients.slice(from_client, to_client))
+            // window.location.reload()
         }
 
     }
@@ -135,24 +161,24 @@ function Index() {
                 <div className="table-header">
                     <div className="table-header-title">
                         <FontAwesomeIcon className='icon' icon={faUsers} />
-                        <span className=''>Les Comptes des Clients</span>
+                        <span className=''>La Liste des Clients</span>
                     </div>
                     <div className="table-header-options">
                         <div className="filter">
-                            <span>Affiché par:</span>
+                            <span>Affiché:</span>
                             <div className="dropdown">
-                                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button className="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     {filterByEmail}
                                 </button>
                                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><button  className="dropdown-item" onClick={()=>handleFilterbyEmail('tout')} >tout</button></li>
-                                    {comptes && comptes.map(({_id, email}) => (
-                                        <li key={_id}><button  className="dropdown-item" onClick={()=>handleFilterbyEmail(email)} >{email}</button></li>
+                                    <li><button  className="dropdown-item" onClick={()=>handleFilterby('tout')} >tout</button></li>
+                                    {filters && filters.map(({id, by}) => (
+                                        <li key={id}><button  className="dropdown-item" onClick={()=>handleFilterby(by)} >{by}</button></li>
                                     ))}
                                 </ul>
                             </div>
                         </div>
-                        <Link to="/ajouter-client" className="btn btn-success ajout-client">
+                        <Link to="/ajouter-client" className="btn btn-sm btn-success ajout-client">
                             <FontAwesomeIcon className="icon" icon={faUser} />
                             Ajouter un Client
                         </Link>
@@ -163,18 +189,20 @@ function Index() {
                         <tr>
                             <th scope="col">Nom complet</th>
                             <th scope="col">Téléphone</th>
+                            <th scope="col">Prochaine renouvellem.</th>
                             <th scope="col" className="text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            dispayedClients &&  dispayedClients.map(({_id, fullName, phoneNumber, active}) => (
+                            dispayedClients &&  dispayedClients.map(({_id, fullName, phoneNumber, active, lastSubscriptionTermination}) => (
                                 <tr key={_id}>
                                     <td>{fullName}</td>
                                     <td>
                                         <FontAwesomeIcon className="icon" icon={faWhatsapp} />
                                         {phoneNumber}
                                     </td>
+                                    <td>{new Date(lastSubscriptionTermination).toDateString()}</td>
                                         
                                         <td className="text-center">
                                             <FontAwesomeIcon className={active ? "icon-active" : ''}  icon={faSackDollar} />

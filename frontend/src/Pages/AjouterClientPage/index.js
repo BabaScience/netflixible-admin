@@ -18,11 +18,18 @@ function Index() {
     const expirationMonth = useRef('')
     const expirationYear = useRef('')
 
+    const closeSuccessRef = useRef()
+
+    const ApiUrl = "" // 'http://localhost:5000'
+
 
     const [errorMessage, setErrorMessage] = useState('Hello Bug')
     const [errorTitle, setErrorTitle] = useState('Ops!')
     const [successMessage, setSuccessMessage] = useState('Hello Human')
     const [successTitle, setSuccessTitle] = useState('Félicitation')
+
+    
+    
 
     async function handleSubscription(e){
         e.preventDefault()
@@ -36,7 +43,7 @@ function Index() {
         console.log(expirationYear.current)
         const date = new Date(expirationYear.current, expirationMonth.current-1, expirationDay.current)
         const today = Date.now()
-        await axios.post('/subscriptions/add', {
+        await axios.post(`${ApiUrl}/subscriptions/add`, {
             customer: {
                 fullName: nomComplet.current,
                 phoneNumber:  telephone.current
@@ -49,6 +56,7 @@ function Index() {
             startingDate: today,
             endingDate: date
         }).then(result =>{
+            console.log('Result ->', result)
             if(result.data.error){
                 console.log(result.data.error.message)
                 setErrorMessage(result.data.error.message)
@@ -57,6 +65,7 @@ function Index() {
                 console.log(result.data.message)
                 setSuccessMessage(result.data.message)
                 document.getElementById('success-button').click()
+                // window.location.reload()
             }
         }).catch(err => {
             console.log("Error: ", err)
@@ -83,7 +92,7 @@ function Index() {
     }
 
     async function generateAccountEmail(documentId){
-        axios.get('/generator/pick-account')
+        axios.get(`${ApiUrl}/generator/pick-account`)
             .then(result => {
                 if(result.data.error){
                     console.log("Error: ", result.data.error)
@@ -106,7 +115,7 @@ function Index() {
 
     async function generateProfileCode(documentId){
         console.log("Email: ", netflixEmail.current)
-        axios.post('/generator/pick-profile',{
+        axios.post(`${ApiUrl}/generator/pick-profile`,{
             email: netflixEmail.current
         }).then(result => {
             if(result.data.error){
@@ -127,7 +136,7 @@ function Index() {
     }
     return (
         <AdminPageStructure
-            headerTitle='Un Nouveau CLient?'
+            headerTitle='Un Nouveau Client?'
             headerDescription='Ajouter un nouveau client içi.'
         >
             <div className='body'>
@@ -168,7 +177,7 @@ function Index() {
                                 {successMessage}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button ref={closeSuccessRef} id='close-success' type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
                     </div>

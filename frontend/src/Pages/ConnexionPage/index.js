@@ -11,13 +11,14 @@ function Index() {
     const password = useRef('')
     const [errMessageClass, setErrMessageClass] = useState('error-message')
     const [errorMessage, setErrorMessage] = useState('')
+    const ApiUrl = "" // 'http://localhost:5000'
 
     async function handleSubmit(e){
         e.preventDefault()
         if(username.current && password.current){
             // console.log('calling axios...')
             setErrMessageClass("error-message")
-            await axios.post('/superusers/login',{
+            await axios.post(`${ApiUrl}/superusers/login`,{
                 username: username.current,
                 password: password.current
             }).then(data => {

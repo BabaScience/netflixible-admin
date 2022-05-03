@@ -8,13 +8,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
     faUser, 
     faFaceAngry,
-    faSackDollar
+    faSackDollar,
+    faUsers,
+    faMoneyBill1Wave
 } from '@fortawesome/free-solid-svg-icons'
 
 
 import  {
     faWhatsapp
 } from '@fortawesome/free-brands-svg-icons'
+
+
+const filters = [
+    {_id: 0, email: "active"},
+    {_id: 1, email: "prochaine renouvellement"},
+]
 
 function Index() {
   const [clients, setClients] = useState(null)
@@ -23,11 +31,12 @@ function Index() {
     const [dispayedClients, setDisplayedClients] = useState(null)
     const [pagination, setPagination] = useState({current: 1, pages: [1]})
     const [comptes, setComptes] = useState(null)
+    const ApiUrl = "" // 'http://localhost:5000'
 
     useEffect(() => {
         console.log("Page Loaded!")
         fetchAccountsFromDB()
-        fetchClientsFromDB()
+        fetchSubscriptionsFromDB()
         handlePagination()
 
 
@@ -35,23 +44,59 @@ function Index() {
     }, [])
 
     async function fetchAccountsFromDB(){
-        await axios.get('/accounts')
+        await axios.get(`${ApiUrl}/accounts`)
                   .then(fetchedAccounts => {
                     setComptes(fetchedAccounts?.data)
                   })
                   .catch(err => console.log(err))
     }
     
-    async function fetchClientsFromDB(){
-      await axios.get('/subscriptions')
+    async function fetchSubscriptionsFromDB(){
+      await axios.get(`${ApiUrl}/subscriptions`)
                 .then(fetchedCustomers => {
-                    console.log(fetchedCustomers?.data.filter(sub => sub.customer.active))
-                    setClients(fetchedCustomers?.data.filter(sub => sub.customer.active))
-                    setFilteredClients(fetchedCustomers?.data.filter(sub => sub.customer.active))
-                    setDisplayedClients(fetchedCustomers?.data.filter(sub => sub.customer.active))
+                    console.log(fetchedCustomers?.data.filter(sub => sub.customer))
+                    setClients(fetchedCustomers?.data.filter(sub => sub.customer))
+                    setFilteredClients(fetchedCustomers?.data.filter(sub => sub.customer))
+                    setDisplayedClients(fetchedCustomers?.data.filter(sub => sub.customer))
                 })
                 .catch(err => console.log(err))
     }
+
+    async function fetchActiveSubscriptionsFromDB(){
+        await axios.get(`${ApiUrl}/subscriptions`)
+                  .then(fetchedCustomers => {
+                      console.log(fetchedCustomers?.data.filter(sub => sub.customer.active))
+                      setClients(fetchedCustomers?.data.filter(sub => sub.customer.active))
+                      setFilteredClients(fetchedCustomers?.data.filter(sub => sub.customer.active))
+                      setDisplayedClients(fetchedCustomers?.data.filter(sub => sub.customer.active))
+                  })
+                  .catch(err => console.log(err))
+      }
+
+      async function fetchAndOrderDescSubscriptionsFromDB(){
+        await axios.get(`${ApiUrl}/subscriptions`)
+                  .then(fetchedCustomers => {
+                      console.log(fetchedCustomers?.data.sort((a, b) => b.endingDate - a.endingDate))
+                      setClients(fetchedCustomers?.data.sort((a, b) => b.endingDate - a.endingDate))
+                      setFilteredClients(fetchedCustomers?.data.sort((a, b) => b.endingDate - a.endingDate))
+                      setDisplayedClients(fetchedCustomers?.data.sort((a, b) => b.endingDate - a.endingDate))
+                  })
+                  .catch(err => console.log(err))
+      }
+
+      async function fetchSubscriptionsByEmailFromDB(email){
+        await axios.get(`${ApiUrl}/subscriptions`)
+                  .then(fetchedCustomers => {
+                      console.log(fetchedCustomers?.data.filter(({account}) => account?.email === email))
+                      setClients(fetchedCustomers?.data.filter(({account}) => account?.email === email))
+                      setFilteredClients(fetchedCustomers?.data.filter(({account}) => account?.email === email))
+                      setDisplayedClients(fetchedCustomers?.data.filter(({account}) => account?.email === email))
+                  })
+                  .catch(err => console.log(err))
+      }
+      
+
+    
 
     function handleFilterbyEmail(email) {
         /*
@@ -60,12 +105,17 @@ function Index() {
             - calls handlePagination
         */
         
-        if(email != 'tout'){
-            var filtered_clients = clients.filter(({compteNetflix}) => compteNetflix === email)
-            setFilteredClients(filtered_clients)
+        if(email === 'prochaine renouvellement'){
+            fetchAndOrderDescSubscriptionsFromDB()
+        }
+        if(email === "active"){
+            fetchActiveSubscriptionsFromDB()
+        }
+        else if(email === "tout"){
+            fetchSubscriptionsFromDB()
         }
         else {
-            setFilteredClients(clients)
+            fetchSubscriptionsByEmailFromDB(email)
         }
         handlePagination()
         setFilterByEmail(email)
@@ -103,26 +153,31 @@ function Index() {
         headerDescription='Vous pouvez voire la liste des abonnements içi!'
     >
         <div className="table-container">
-                <h3>List des clients Abonnements Netflix ({clients ? clients.length: 0})</h3>
                 <div className="table-header">
-                    <div className="filter">
-                        <span>Affiché par:</span>
-                        <div className="dropdown">
-                            <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                {filterByEmail}
-                            </button>
-                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><button  className="dropdown-item" onClick={()=>handleFilterbyEmail('tout')} >tout</button></li>
-                                {comptes && comptes.map(({_id, email}) => (
-                                    <li key={_id}><button  className="dropdown-item" onClick={()=>handleFilterbyEmail(email)} >{email}</button></li>
-                                ))}
-                            </ul>
-                        </div>
+                    <div className="table-header-title">
+                        <FontAwesomeIcon className='icon' icon={faMoneyBill1Wave} />
+                        <span className=''>List des clients Abonnements Netflix ({clients ? clients.length: 0})</span>       
                     </div>
-                    <Link to="/ajouter-client" className="btn btn-success ajout-client">
-                        <FontAwesomeIcon className="icon" icon={faUser} />
-                        Ajouter un Abonnement
-                    </Link>
+                    <div className="table-header-options">
+                        <div className="filter">
+                            <span>Affiché par:</span>
+                            <div className="dropdown">
+                                <button className="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {filterByEmail}
+                                </button>
+                                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><button  className="dropdown-item" onClick={()=>handleFilterbyEmail('tout')} >tout</button></li>
+                                    {comptes && [...filters, ...comptes].map(({_id, email}) => (
+                                        <li key={_id}><button  className="dropdown-item" onClick={()=>handleFilterbyEmail(email)} >{email}</button></li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                        <Link to="/ajouter-client" className="btn btn-sm btn-success ajout-client">
+                            <FontAwesomeIcon className="icon" icon={faUser} />
+                            Ajouter un Abonnement
+                        </Link>
+                    </div>
                 </div>
                 <table className="table table-borderless">
                     <thead>
