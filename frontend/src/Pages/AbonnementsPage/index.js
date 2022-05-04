@@ -61,7 +61,7 @@ function Index() {
                 })
                 .catch(err => console.log(err))
     }
-
+ 
     async function fetchActiveSubscriptionsFromDB(){
         await axios.get(`${ApiUrl}/subscriptions`)
                   .then(fetchedCustomers => {
