@@ -31,7 +31,7 @@ function Index() {
     const [dispayedClients, setDisplayedClients] = useState(null)
     const [pagination, setPagination] = useState({current: 1, pages: [1]})
     const [comptes, setComptes] = useState(null)
-    const ApiUrl = process.env.REACT_APP_SERVER_BASE_URL || "" 
+    const ApiUrl = "" //  process.env.REACT_APP_SERVER_BASE_URL || "" 
 
     useEffect(() => {
         console.log("Page Loaded!")

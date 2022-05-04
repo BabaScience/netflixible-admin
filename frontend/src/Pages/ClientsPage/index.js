@@ -51,7 +51,7 @@ function Index() {
     const [pagination, setPagination] = useState({current: 1, pages: [1]})
     const [comptes, setComptes] = useState(null)
 
-    const ApiUrl = process.env.REACT_APP_SERVER_BASE_URL || "" // 'http://localhost:5000'
+    const ApiUrl = "" // process.env.REACT_APP_SERVER_BASE_URL || "" // 'http://localhost:5000'
     console.log("ApiUrl: ", ApiUrl)
 
     useEffect(() => {

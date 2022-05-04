@@ -27,7 +27,7 @@ const exampleAccounts = [
 function Index() {
   const [accounts, setAccounts] = useState(null)
 
-  const ApiUrl = process.env.REACT_APP_SERVER_BASE_URL || ""  // 'http://localhost:5000'
+  const ApiUrl = "" // process.env.REACT_APP_SERVER_BASE_URL || ""  // 'http://localhost:5000'
 
   useEffect(() => {
     console.log('restarted')

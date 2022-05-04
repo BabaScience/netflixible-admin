@@ -20,7 +20,7 @@ function Index() {
 
     const closeSuccessRef = useRef()
 
-    const ApiUrl = process.env.REACT_APP_SERVER_BASE_URL || ""  // 'http://localhost:5000'
+    const ApiUrl = "" // process.env.REACT_APP_SERVER_BASE_URL || ""  // 'http://localhost:5000'
 
 
     const [errorMessage, setErrorMessage] = useState('Hello Bug')
