@@ -22,7 +22,7 @@ function Index() {
     const [successMessage, setSuccessMessage] = useState('Hello Human')
     const [successTitle, setSuccessTitle] = useState('Félicitation')
 
-    const ApiUrl = "" // 'http://localhost:5000'
+    const ApiUrl = process.env.REACT_APP_SERVER_BASE_URL || ""  // 'http://localhost:5000'
 
     async function handleAddNetflixAccount(e){
         e.preventDefault()

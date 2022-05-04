@@ -11,7 +11,7 @@ function Index() {
     const password = useRef('')
     const [errMessageClass, setErrMessageClass] = useState('error-message')
     const [errorMessage, setErrorMessage] = useState('')
-    const ApiUrl = "" // 'http://localhost:5000'
+    const ApiUrl = process.env.REACT_APP_SERVER_BASE_URL || "" // 'http://localhost:5000'
 
     async function handleSubmit(e){
         e.preventDefault()

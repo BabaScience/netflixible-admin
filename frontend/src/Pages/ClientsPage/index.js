@@ -51,15 +51,13 @@ function Index() {
     const [pagination, setPagination] = useState({current: 1, pages: [1]})
     const [comptes, setComptes] = useState(null)
 
-    const ApiUrl =  "" // 'http://localhost:5000'
+    const ApiUrl = process.env.REACT_APP_SERVER_BASE_URL || "" // 'http://localhost:5000'
+    console.log("ApiUrl: ", ApiUrl)
 
     useEffect(() => {
         console.log("Page Loaded!")
         fetchAccountsFromDB()
         fetchClientsFromDB()
-        handlePagination()
-        
-
 
     }, [])
 
@@ -78,6 +76,7 @@ function Index() {
                     setClients(fetchedCustomers?.data)
                     setFilteredClients(fetchedCustomers?.data)
                     setDisplayedClients(fetchedCustomers?.data)
+                    handlePagination()
                 })
                 .catch(err => console.log(err))
     }
@@ -89,6 +88,7 @@ function Index() {
                       setClients(fetchedCustomers?.data.filter(customer => customer?.active) )
                       setFilteredClients(fetchedCustomers?.data.filter(customer => customer?.active) )
                       setDisplayedClients(fetchedCustomers?.data.filter(customer => customer?.active) )
+                      handlePagination()
                   })
                   .catch(err => console.log(err))
       }
@@ -100,6 +100,7 @@ function Index() {
                       setClients(fetchedCustomers?.data.filter(customer => !customer?.active))
                       setFilteredClients(fetchedCustomers?.data.filter(customer => !customer?.active))
                       setDisplayedClients(fetchedCustomers?.data.filter(customer => !customer?.active))
+                      handlePagination()
                   })
                   .catch(err => console.log(err))
       }
