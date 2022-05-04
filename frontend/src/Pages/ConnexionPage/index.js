@@ -6,12 +6,12 @@ import axios from 'axios'
 import { useNavigate  } from 'react-router-dom'
 
 function Index() {
-    const navigate = useNavigate()
+    const navigate = useNavigate() 
     const username = useRef('')
     const password = useRef('')
     const [errMessageClass, setErrMessageClass] = useState('error-message')
     const [errorMessage, setErrorMessage] = useState('')
-    const ApiUrl = ""// process.env.REACT_APP_SERVER_BASE_URL || "" // 'http://localhost:5000'
+    const ApiUrl = "" // process.env.REACT_APP_SERVER_BASE_URL || "" // 'http://localhost:5000'
 
     async function handleSubmit(e){
         e.preventDefault()
